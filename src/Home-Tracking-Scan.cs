@@ -42,8 +42,8 @@ namespace PKHeX.Plugin
                     var pkm = sav.GetBoxSlotAtIndex(i, j);
                     if (pkm.Species <= 0) continue;
 
-                    // Formata o valor do Tracker (u64) em Hexadecimal de 16 dígitos
-                    string trackerHex = pkm.Tracker.ToString("X16");
+                    // Na versão 26.3.20+, a propriedade foi renomeada para HomeTracker
+                    string trackerHex = pkm.HomeTracker.ToString("X16");
                     results.Add($"{i + 1},{j + 1},{pkm.Species},{pkm.Nickname},{trackerHex}");
                 }
             }
@@ -52,7 +52,7 @@ namespace PKHeX.Plugin
             try 
             {
                 File.WriteAllLines(fileName, results);
-                MessageBox.Show($"Relatório '{fileName}' gerado com sucesso na pasta do seu PKHeX!", "Sucesso");
+                MessageBox.Show($"Relatório '{fileName}' gerado com sucesso!", "Sucesso");
             }
             catch (Exception ex)
             {
@@ -60,7 +60,6 @@ namespace PKHeX.Plugin
             }
         }
 
-        // Métodos exigidos pela interface IPlugin da versão 26.3.20+
         public void NotifySaveLoaded() { }
         public bool TryLoadFile(string filePath) => false; 
         public bool TryModifyFile(string filePath) => false;
