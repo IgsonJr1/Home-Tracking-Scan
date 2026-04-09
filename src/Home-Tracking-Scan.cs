@@ -17,15 +17,10 @@ namespace PKHeX.Plugin
         {
             SaveFileEditor = (ISaveFileProvider)Array.Find(args, z => z is ISaveFileProvider);
             var menu = (ToolStrip)Array.Find(args, z => z is ToolStrip);
-            
-            // Localiza o menu "Tools" (Ferramentas) do PKHeX
             var toolsMenu = (ToolStripMenuItem)menu.Items["Menu_Tools"];
 
-            // Cria o novo item de menu
             var exportItem = new ToolStripMenuItem("Exportar Trackers das Boxes");
             exportItem.Click += (s, e) => ExportarDados();
-            
-            // Adiciona ao menu Tools
             toolsMenu.DropDownItems.Add(exportItem);
         }
 
@@ -54,8 +49,7 @@ namespace PKHeX.Plugin
 
             string fileName = "trackers_home.csv";
             File.WriteAllLines(fileName, results);
-            
-            MessageBox.Show($"Relatório '{fileName}' gerado na pasta do seu PKHeX!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show($"Relatório '{fileName}' gerado com sucesso!", "Sucesso");
         }
 
         public void NotifySaveLoaded() { }
