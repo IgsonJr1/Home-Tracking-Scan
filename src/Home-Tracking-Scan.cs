@@ -1,10 +1,15 @@
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Windows.Forms;
 using PKHeX.Core;
 
 namespace PKHeX.Plugin
 {
-    public class TrackerExport : IPlugin
+    public class HomeTrackingScan : IPlugin
     {
-        public string Name => "Exportador de Home Tracking";
+        public string Name => "Home Tracking Scan";
         public int Priority => 1;
         public ISaveFileProvider SaveFileEditor { get; private set; }
 
@@ -12,17 +17,28 @@ namespace PKHeX.Plugin
         {
             SaveFileEditor = (ISaveFileProvider)Array.Find(args, z => z is ISaveFileProvider);
             var menu = (ToolStrip)Array.Find(args, z => z is ToolStrip);
-            var baseMenu = (ToolStripDropDownItem)menu.Items.Find("Menu_Tools", false)[0];
+            
+            // Localiza o menu "Tools" (Ferramentas) do PKHeX
+            var toolsMenu = (ToolStripMenuItem)menu.Items["Menu_Tools"];
 
+            // Cria o novo item de menu
             var exportItem = new ToolStripMenuItem("Exportar Trackers das Boxes");
             exportItem.Click += (s, e) => ExportarDados();
-            baseMenu.DropDownItems.Add(exportItem);
+            
+            // Adiciona ao menu Tools
+            toolsMenu.DropDownItems.Add(exportItem);
         }
 
         private void ExportarDados()
         {
+            if (SaveFileEditor.SAV == null)
+            {
+                MessageBox.Show("Por favor, carregue um save primeiro!");
+                return;
+            }
+
             var sav = SaveFileEditor.SAV;
-            var results = new List<string> { "Box,Slot,Especie,HomeTracker" };
+            var results = new List<string> { "Box,Slot,Especie,Nickname,HomeTracker" };
 
             for (int i = 0; i < sav.BoxCount; i++)
             {
@@ -30,12 +46,16 @@ namespace PKHeX.Plugin
                 {
                     var pkm = sav.GetBoxSlotAtIndex(i, j);
                     if (pkm.Species <= 0) continue;
-                    results.Add($"{i + 1},{j + 1},{pkm.Species},{pkm.Tracker:X16}");
+
+                    string trackerHex = pkm.Tracker.ToString("X16");
+                    results.Add($"{i + 1},{j + 1},{pkm.Species},{pkm.Nickname},{trackerHex}");
                 }
             }
 
-            File.WriteAllLines("trackers_home.csv", results);
-            MessageBox.Show("Relatório 'trackers_home.csv' gerado na pasta do PKHeX!");
+            string fileName = "trackers_home.csv";
+            File.WriteAllLines(fileName, results);
+            
+            MessageBox.Show($"Relatório '{fileName}' gerado na pasta do seu PKHeX!", "Sucesso", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         public void NotifySaveLoaded() { }
