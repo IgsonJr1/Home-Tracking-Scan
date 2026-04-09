@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <EnableWindowsTargeting>true</EnableWindowsTargeting>
-    <Version>1.2.0</Version>
+    <Version>1.6.0</Version>
     <AssemblyName>Home-Tracking-Scan</AssemblyName>
   </PropertyGroup>
 
