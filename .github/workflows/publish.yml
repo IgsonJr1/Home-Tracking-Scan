@@ -18,7 +18,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x'
+          dotnet-version: '10.0.x'
 
       - name: Restaurar Dependências
         run: dotnet restore src/Home-Tracking-Scan.csproj
@@ -29,7 +29,7 @@ jobs:
       - name: Criar Zip do Plugin
         run: |
           mkdir ./publish
-          cp src/bin/Release/net9.0-windows/Home-Tracking-Scan.dll ./publish/
+          cp src/bin/Release/net10.0-windows/Home-Tracking-Scan.dll ./publish/
           cd publish
           zip -r ../Home-Tracking-Scan_Plugin.zip ./*
 
