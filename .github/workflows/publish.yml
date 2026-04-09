@@ -3,7 +3,7 @@ name: Compilar Plugin PKHeX
 on:
   push:
     branches: [main]
-  workflow_dispatch: # Permite rodar manualmente
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -18,26 +18,25 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v4
         with:
-          dotnet-version: '9.0.x' # Ou 8.0.x dependendo da sua versão do PKHeX
+          dotnet-version: '9.0.x'
 
       - name: Restaurar Dependências
-        run: dotnet restore
+        run: dotnet restore src/Home-Tracking-Scan.csproj
 
       - name: Build do Plugin
-        run: dotnet build -c Release
+        run: dotnet build src/Home-Tracking-Scan.csproj -c Release
 
       - name: Criar Zip do Plugin
         run: |
           mkdir ./publish
-          # Busca qualquer DLL gerada na pasta bin
-          find ./bin/Release/ -name "*.dll" -exec cp {} ./publish/ \;
+          cp src/bin/Release/net9.0-windows/Home-Tracking-Scan.dll ./publish/
           cd publish
-          zip -r ../Plugin_PKHeX_Tracker.zip ./*
+          zip -r ../Home-Tracking-Scan_Plugin.zip ./*
 
-      - name: Criar Release
+      - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
-          files: Plugin_PKHeX_Tracker.zip
+          files: Home-Tracking-Scan_Plugin.zip
           tag_name: v${{ github.run_number }}
           name: Release v${{ github.run_number }}
         env:
