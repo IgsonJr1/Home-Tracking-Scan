@@ -1,0 +1,44 @@
+name: Compilar Plugin PKHeX
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: # Permite rodar manualmente
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x' # Ou 8.0.x dependendo da sua versão do PKHeX
+
+      - name: Restaurar Dependências
+        run: dotnet restore
+
+      - name: Build do Plugin
+        run: dotnet build -c Release
+
+      - name: Criar Zip do Plugin
+        run: |
+          mkdir ./publish
+          # Busca qualquer DLL gerada na pasta bin
+          find ./bin/Release/ -name "*.dll" -exec cp {} ./publish/ \;
+          cd publish
+          zip -r ../Plugin_PKHeX_Tracker.zip ./*
+
+      - name: Criar Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: Plugin_PKHeX_Tracker.zip
+          tag_name: v${{ github.run_number }}
+          name: Release v${{ github.run_number }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
