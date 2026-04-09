@@ -8,6 +8,10 @@ on:
 permissions:
   contents: write
 
+# Adicionado para resolver o aviso de depreciação do Node.js 20
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build:
     runs-on: ubuntu-latest
