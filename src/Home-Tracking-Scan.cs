@@ -42,8 +42,13 @@ namespace PKHeX.Plugin
                     var pkm = sav.GetBoxSlotAtIndex(i, j);
                     if (pkm.Species <= 0) continue;
 
-                    // Na versão 26.3.20+, a propriedade foi renomeada para HomeTracker
-                    string trackerHex = pkm.HomeTracker.ToString("X16");
+                    // Usamos a interface IHomeTrack que você enviou para aceder ao Tracker
+                    string trackerHex = "0000000000000000";
+                    if (pkm is IHomeTrack ht)
+                    {
+                        trackerHex = ht.Tracker.ToString("X16");
+                    }
+
                     results.Add($"{i + 1},{j + 1},{pkm.Species},{pkm.Nickname},{trackerHex}");
                 }
             }
@@ -56,7 +61,7 @@ namespace PKHeX.Plugin
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"Erro ao salvar arquivo: {ex.Message}");
+                MessageBox.Show($"Erro ao salvar: {ex.Message}");
             }
         }
 
